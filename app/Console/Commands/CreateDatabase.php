@@ -28,10 +28,6 @@ class CreateDatabase extends Command
     {
         try{
             $dbname = $this->argument('dbname');
-            
-            $new_db_name = "DB_".rand()."_".time();
-            $new_mysql_username = "root";
-            $new_mysql_password = "";
 
             $conn = mysqli_connect(
                 config('database.connections.mysql.host'), 
