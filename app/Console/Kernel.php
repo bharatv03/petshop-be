@@ -7,6 +7,11 @@ use Illuminate\Foundation\Console\Kernel as ConsoleKernel;
 
 class Kernel extends ConsoleKernel
 {
+    //Register commands
+    protected $commands = [
+        Commands\CreateDatabase::class
+    ];
+
     /**
      * Define the application's command schedule.
      */

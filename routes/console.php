@@ -17,3 +17,7 @@ use Illuminate\Support\Facades\Artisan;
 Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
+
+Artisan::command('make:database {dbname} {connection?}', function (string $dbname) {
+    $this->info("Creating DB: {$dbname}!");
+});
