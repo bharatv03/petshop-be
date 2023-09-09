@@ -9,7 +9,8 @@ class Kernel extends ConsoleKernel
 {
     //Register commands
     protected $commands = [
-        Commands\CreateDatabase::class
+        Commands\CreateDatabase::class,
+        Commands\GenerateJwtSecret::class,
     ];
 
     /**

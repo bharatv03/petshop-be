@@ -21,3 +21,7 @@ Artisan::command('inspire', function () {
 Artisan::command('make:database {dbname} {connection?}', function (string $dbname) {
     $this->info("Creating DB: {$dbname}!");
 });
+
+Artisan::command('jwt:secret', function (string $dbname) {
+    $this->info("Key Generated");
+});
