@@ -2,12 +2,12 @@
 
 namespace App\Helpers;
 
-use Illuminate\Auth\AuthenticationException;
+use Illuminate\{Auth\AuthenticationException, 
+    Support\Str, Support\Facades\Auth};
 use Exception;
-use Firebase\JWT\JWT;
-use Firebase\JWT\Key;
+use Firebase\JWT\{JWT, Key};
 use DateTimeImmutable;
-use Illuminate\Support\Str;
+use App\Helpers\Auth\TokenHelper;
 
 class CommonHelper 
 {
@@ -27,7 +27,7 @@ class CommonHelper
             if (!$jwt) {
                 throw new AuthenticationException('could not extract token');
             }
-            
+
         }else{
             throw new AuthenticationException('token not found');
         }
@@ -55,5 +55,23 @@ class CommonHelper
         $token = $this->DecodeRawJWT($jwt);
 
         return $token;
+    }
+
+    public static function LoginAttempt($input, $remember)
+    {
+        if (Auth::attempt($input, $remember))
+        {
+            $user = Auth::user();
+
+            $tokenHelper = new TokenHelper;
+            $token = $tokenHelper->GenerateToken($user);
+            $success = ['user' => $user, 'token' => $token];
+
+            return $success;
+        }
+        else{
+            $error = ['error' => "Invalid Login credentials"];
+            return $error;
+        }
     }
 }
