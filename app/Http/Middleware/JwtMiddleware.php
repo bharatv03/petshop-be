@@ -21,7 +21,13 @@ class JwtMiddleware
         try {
             $token = $commonHelper->GetAndDecodeJWT();
         } catch (Exception $e) {
-            return response()->json(['error' => $e->getMessage()], 401);
+            $response = [
+                'success' => false,
+                'error'=> $e->getMessage(),
+                'data' => [],
+                'errors'=> []
+            ];
+            return response()->json($response, HTTP_UNAUTHORIZED);
         }
 
         return $next($request);

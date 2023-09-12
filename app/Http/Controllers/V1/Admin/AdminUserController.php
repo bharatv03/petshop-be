@@ -2,15 +2,14 @@
 
 declare(strict_types=1);
 
-namespace App\Http\Controllers\V1;
+namespace App\Http\Controllers\V1\Admin;
 
-use App\Http\{Controllers\ApiController, 
-    Requests\UserLoginRequest, Requests\UserRegistrationRequest};
+use App\Http\{Controllers\ApiController, Requests\AdminUserUpdateRequest};
 use App\Helpers\{CommonHelper, Auth\TokenHelper, Auth\UserHelper};
 use App\Repositories\UserRepositoryInterface;
 use Illuminate\{Support\Str,HTTP\JsonResponse};
 
-class AuthController extends ApiController
+class AdminUserController extends ApiController
 {
     protected $userRepository;
 
@@ -21,9 +20,9 @@ class AuthController extends ApiController
 
     /**
      * @OA\Post(
-     *      path="/api/v1/user/create",
-     *      operationId="register",
-     *      tags={"User"},
+     *      path="/api/v1/user/user-edit/{uuid}",
+     *      operationId="useEdit",
+     *      tags={"Admin"},
      *      summary="Register a new user",
      *      description="Register a new user and return user details",
      *      @OA\RequestBody(
@@ -61,11 +60,9 @@ class AuthController extends ApiController
      *      ),
      * )
      */
-    public function register(UserRegistrationRequest $request): JsonResponse
+    public function userEdit(AdminUserUpdateRequest $request, $uuid): JsonResponse
     {
         $input = $request->safe()->all();
-
-        $input['uuid'] = (string) Str::uuid();
         $input['password'] = bcrypt($input['password']);
         $user = $this->userRepository->create($input);
 
@@ -77,52 +74,5 @@ class AuthController extends ApiController
             return $this->sendResponse($success, __('message.user.register'), HTTP_OK);
         }
         
-    }
-
-    /**
-     * @OA\Post(
-     *      path="/api/v1/user/login",
-     *      operationId="login",
-     *      tags={"User"},
-     *      summary="User Login",
-     *      description="Login a user and return Token",
-     *      @OA\RequestBody(
-     *          @OA\MediaType(
-     *            mediaType="application/x-www-form-urlencoded",
-     *            @OA\Schema(
-     *              required={"email","password"},
-     *              @OA\Property(property="email", type="string", format="email"),
-     *              @OA\Property(property="password", type="string", format="password"),
-     *            ),
-     *         ),
-     *      ),
-     *      @OA\Response(
-     *          response=200,
-     *          description="Login successfull",
-     *          @OA\JsonContent(
-     *              @OA\Property(property="token", type="string", example="your-jwt-token"),
-     *          ),
-     *      ),
-     *      @OA\Response(
-     *          response=422,
-     *          description="Validation error",
-     *          @OA\JsonContent(
-     *              @OA\Property(property="message", type="string", example="The given data was invalid."),
-     *              @OA\Property(property="errors", type="object"),
-     *          ),
-     *      ),
-     * )
-     */
-    public function login(UserLoginRequest $request): JsonResponse
-    {
-        $input = $request->safe()->only(['email', 'password']);
-        $remember = $request->remember;
-        $input['is_admin'] = false;
-        $response = CommonHelper::LoginAttempt($input, $remember);
-
-        if(isset($response['error']))
-            return $this->sendError($response['error'], HTTP_UNPROCESSABLE_ENTITY);
-        else
-            return $this->sendResponse($response, __('message.admin.login'), HTTP_OK);
     }
 }

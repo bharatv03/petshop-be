@@ -13,22 +13,24 @@ class APIController extends Controller
     public function sendResponse($data, $message, $status = 200): JsonResponse
     {
         $response = [
+            'success' => true,
             'data' => $data,
+            'error' => NULL,
             'message' => $message
         ];
 
         return response()->json($response, $status);
     }
 
-    public function sendError($message, $errorData = [], $status = 400): JsonResponse
+    public function sendError($message, $status = 400): JsonResponse
     {
         $response = [
-            'message' => $message
-        ];
+            'success' => false,
+            'error'=> $message,
+            'data' => [],
+            'errors'=> []
 
-        if(!empty($errorData)) {
-            $response['data'] = $errorData;
-        }
+        ];
 
         return response()->json($response, $status);
     }

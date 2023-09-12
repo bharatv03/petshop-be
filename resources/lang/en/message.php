@@ -10,4 +10,5 @@ return [
         'login' => 'User Login was successfully done!',
         'register' => 'User Registration was done successfully!',
     ],
+    'invalid_login' => 'Login credentials were invalid!',
 ];

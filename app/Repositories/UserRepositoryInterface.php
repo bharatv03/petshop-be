@@ -11,5 +11,6 @@ interface UserRepositoryInterface
     public function getByFieldSingleRecord($field, $value);
     public function create(array $data);
     public function update(array $data, $id);
-    public function delete($id);
+    public function updateByUuid(array $data, $uuid);
+    public function deleteByUuidNotAdmin($uuid);
 }

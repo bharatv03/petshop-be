@@ -42,9 +42,19 @@ class UserRepository implements UserRepositoryInterface
         return null;
     }
 
-    public function delete($id)
+    public function updateByUuid(array $data, $uuid)
     {
-        $user = User::find($id);
+        $user = User::where('uuid', $id)->first();
+        if ($user) {
+            $user->update($data);
+            return $user;
+        }
+        return null;
+    }
+
+    public function deleteByUuidNotAdmin($uuid)
+    {
+        $user = User::where([['uuid','=', $uuid],['is_admin','=', false]])->first();
         if ($user) {
             $user->delete();
         }

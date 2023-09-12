@@ -2,7 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\V1\{AuthController,Admin\AdminAuthController};
+use App\Http\Controllers\V1\{AuthController, UserController, Admin\AdminAuthController, 
+    Admin\AdminUserController};
 
 /*
 |--------------------------------------------------------------------------
@@ -26,13 +27,15 @@ Route::prefix('v1')->group(function () {
         //routes which will be allowed to authenticated admin users
         Route::middleware(['admin'])->group(function () {
             Route::prefix('admin')->group(function(){
-            
+                Route::put('/user-edit/{uuid}', [AdminUserController::class, 'userEdit'])->name('admin.user.edit');
+                Route::get('/user-listing', [UserController::class, 'userList'])->name('admin.user.list');
+                Route::delete('/delete/{uuid}', [UserController::class, 'register'])->name('admin.user.delete');
             });
         });
 
         //routes which will be allowed to authenticated admin users
         Route::prefix('user')->group(function(){
-            
+            Route::delete('/delete', [UserController::class, 'register'])->name('admin.user.delete');
         });
     });
 

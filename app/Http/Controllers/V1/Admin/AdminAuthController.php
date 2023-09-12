@@ -68,7 +68,7 @@ class AdminAuthController extends ApiController
         $input['uuid'] = (string) Str::uuid();
         $input['is_admin'] = true;
         $input['password'] = bcrypt($input['password']);
-        $user = $this->userRepository->create($input);
+        $user = $this->userRepository->updateByUuid($input, $uuid);
 
         if (!isset($user['error'])) {
             $success = [
@@ -77,7 +77,7 @@ class AdminAuthController extends ApiController
     
             return $this->sendResponse($success, __('message.admin.register'), HTTP_OK);
         }else{
-            return $this->sendError('Unauthorized', $user, 401);
+            return $this->sendError('Unauthorized', $user, HTTP_UNAUTHORIZED);
         }
         
     }
@@ -116,13 +116,16 @@ class AdminAuthController extends ApiController
      *      ),
      * )
      */
-    public function login(UserLoginRequest $request): JsonResponse
+    public function login(AdminLoginRequest $request): JsonResponse
     {
         $input = $request->safe()->only(['email', 'password']);
         $remember = $request->remember;
         $input['is_admin'] = true;
-        $success = CommonHelper::LoginAttempt($input, $remember);
+        $response = CommonHelper::LoginAttempt($input, $remember);
 
-        return $this->sendResponse($success, __('message.admin.login'), HTTP_OK);
+        if(isset($response['error']))
+            return $this->sendError($response['error'], HTTP_UNPROCESSABLE_ENTITY);
+        else
+            return $this->sendResponse($response, __('message.admin.login'), HTTP_OK);
     }
 }

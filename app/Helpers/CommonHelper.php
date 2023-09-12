@@ -62,15 +62,13 @@ class CommonHelper
         if (Auth::attempt($input, $remember))
         {
             $user = Auth::user();
-
             $tokenHelper = new TokenHelper;
             $token = $tokenHelper->GenerateToken($user);
             $success = ['user' => $user, 'token' => $token];
-
             return $success;
         }
         else{
-            $error = ['error' => "Invalid Login credentials"];
+            $error = ['error' => __('message.invalid_login')];
             return $error;
         }
     }

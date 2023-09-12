@@ -30,6 +30,12 @@ class AdminMiddleware
         if ($user->is_admin) {
             return $next($request);
         }
-        return response()->json(['error' => 'Unauthorized'], 401);
+        $response = [
+            'success' => false,
+            'error'=> 'unauthorized',
+            'data' => [],
+            'errors'=> []
+        ];
+        return response()->json($response, HTTP_UNAUTHORIZED);
     }
 }
