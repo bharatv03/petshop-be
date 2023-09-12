@@ -78,7 +78,6 @@ class AuthController extends ApiController
     
             return $this->sendResponse($success, __('message.user.register'), HTTP_OK);
         } catch (QueryException $e) {
-            DB::rollBack();
             $this->sendResponse('Database error: ' . $e->getMessage, HTTP_INTERNAL_SERVER_ERROR);
         }
         
