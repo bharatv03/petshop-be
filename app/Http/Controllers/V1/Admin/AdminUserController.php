@@ -22,11 +22,12 @@ class AdminUserController extends ApiController
 
     /**
      * @OA\Post(
-     *      path="/api/v1/admin/user-edit/{uuid}",
+     *      path="/api/v1/admin/user-edit/",
      *      operationId="useEdit",
      *      tags={"Admin"},
      *      summary="Update selected user details based on uuid",
      *      description="Update selected user details based on uuid",
+     *      security={{"bearer_token":{}}},
      *      @OA\RequestBody(
      *         @OA\MediaType(
      *            mediaType="application/x-www-form-urlencoded",
@@ -38,7 +39,7 @@ class AdminUserController extends ApiController
      *              @OA\Property(property="email", type="string", format="email"),
      *              @OA\Property(property="password", type="string", format="password"),
      *              @OA\Property(property="password_confirmation", type="string"),
-     *              @OA\Property(property="avatar", type="file"),
+     *              @OA\Property(property="avatar", type="string"),
      *              @OA\Property(property="address", type="string"),
      *              @OA\Property(property="phone_number", type="string"),
      *              @OA\Property(property="is_marketing", type="boolean"),
@@ -49,7 +50,7 @@ class AdminUserController extends ApiController
      *          response=200,
      *          description="Successfully updated",
      *          @OA\JsonContent(
-     *              @OA\Property(data="userData", type="string"),
+     *              @OA\Property(property="userData", type="string"),
      *          ),
      *      ),
      *      @OA\Response(
@@ -99,11 +100,12 @@ class AdminUserController extends ApiController
      *      tags={"Admin"},
      *      summary="Display list of users",
      *      description="Display list of users",
+     *      security={{"bearer_token":{}}},
      *      @OA\Response(
      *          response=200,
      *          description="Successfully list successfully listed",
      *          @OA\JsonContent(
-     *              @OA\Property(data="userData", type="string"),
+     *              @OA\Property(property="userData", type="string"),
      *          ),
      *      ),
      *      @OA\Response(
@@ -121,7 +123,7 @@ class AdminUserController extends ApiController
      * )
      */
     public function userList(): JsonResponse
-    {   
+    {
         $gridObj = new UserGrid();
         try {
             $gridData = CommonHelper::GridManagement($this->userRepository, $gridObj);
@@ -143,11 +145,12 @@ class AdminUserController extends ApiController
      *      tags={"Admin"},
      *      summary="Deletion of non admin user",
      *      description="Deletion of non admin user",
+     *      security={{"bearer_token":{}}},
      *      @OA\Response(
      *          response=200,
      *          description="'User deleted successfully!",
      *          @OA\JsonContent(
-     *              @OA\Property(data="userData", type="string"),
+     *              @OA\Property(property="userData", type="string"),
      *          ),
      *      ),
      *      @OA\Response(
@@ -165,7 +168,7 @@ class AdminUserController extends ApiController
      * )
      */
     public function userDelete($uuid): JsonResponse
-    {   
+    {
         $gridObj = new UserGrid();
         try {
             $deleteUser = CommonHelper::DeleteUser($uuid, $this->userRepository);

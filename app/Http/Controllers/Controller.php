@@ -10,6 +10,11 @@ use Illuminate\Routing\Controller as BaseController;
  * @OA\Info(
  *    title="PetShop API",
  *    version="1.0.0",
+ * ),
+ * @OAS\SecurityScheme(
+ *     securityScheme="bearerAuth",
+ *     type="http",
+ *     scheme="bearer"
  * )
  */
 class Controller extends BaseController

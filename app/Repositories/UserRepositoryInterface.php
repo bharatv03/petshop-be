@@ -13,4 +13,5 @@ interface UserRepositoryInterface
     public function update(array $data, $id);
     public function updateByUuid(array $data, $uuid);
     public function deleteByUuidNotAdmin($uuid);
+    public function getPaginatedData($select = [], $limit = 2, $page = 2, $orderBy = '', $sortType = '');
 }
