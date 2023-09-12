@@ -8,7 +8,9 @@ use App\Http\{Controllers\ApiController,
     Requests\UserLoginRequest, Requests\UserRegistrationRequest};
 use App\Helpers\{CommonHelper, Auth\TokenHelper, Auth\UserHelper};
 use App\Repositories\UserRepositoryInterface;
-use Illuminate\{Support\Str,HTTP\JsonResponse};
+use Illuminate\{Support\Str,HTTP\JsonResponse,Support\Facades\DB,
+    Database\QueryException};
+
 
 class AuthController extends ApiController
 {
@@ -69,12 +71,15 @@ class AuthController extends ApiController
         $input['password'] = bcrypt($input['password']);
         $user = $this->userRepository->create($input);
 
-        if ($user) {
+        try {
             $success = [
                 'user' => $user,
             ];
     
             return $this->sendResponse($success, __('message.user.register'), HTTP_OK);
+        } catch (QueryException $e) {
+            DB::rollBack();
+            $this->sendResponse('Database error: ' . $e->getMessage, HTTP_INTERNAL_SERVER_ERROR);
         }
         
     }

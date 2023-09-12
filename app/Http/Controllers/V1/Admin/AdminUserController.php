@@ -5,9 +5,9 @@ declare(strict_types=1);
 namespace App\Http\Controllers\V1\Admin;
 
 use App\Http\{Controllers\ApiController, Requests\AdminUserUpdateRequest};
-use App\Helpers\{CommonHelper, Auth\TokenHelper, Auth\UserHelper};
 use App\Repositories\UserRepositoryInterface;
-use Illuminate\{Support\Str,HTTP\JsonResponse};
+use Illuminate\{HTTP\JsonResponse,Support\Facades\DB,
+    Database\QueryException};
 
 class AdminUserController extends ApiController
 {
@@ -20,11 +20,11 @@ class AdminUserController extends ApiController
 
     /**
      * @OA\Post(
-     *      path="/api/v1/user/user-edit/{uuid}",
+     *      path="/api/v1/admin/user-edit/{uuid}",
      *      operationId="useEdit",
      *      tags={"Admin"},
-     *      summary="Register a new user",
-     *      description="Register a new user and return user details",
+     *      summary="Update selected user details based on uuid",
+     *      description="Update selected user details based on uuid",
      *      @OA\RequestBody(
      *         @OA\MediaType(
      *            mediaType="application/x-www-form-urlencoded",
@@ -45,9 +45,9 @@ class AdminUserController extends ApiController
      *      ),
      *      @OA\Response(
      *          response=200,
-     *          description="Successful registration",
+     *          description="Successfully updated",
      *          @OA\JsonContent(
-     *              @OA\Property(property="token", type="string"),
+     *              @OA\Property(data="userData", type="string"),
      *          ),
      *      ),
      *      @OA\Response(
@@ -64,14 +64,17 @@ class AdminUserController extends ApiController
     {
         $input = $request->safe()->all();
         $input['password'] = bcrypt($input['password']);
-        $user = $this->userRepository->create($input);
-
-        if ($user) {
+        
+        try {
+            $user = $this->userRepository->updateByUuid($input, $uuid);
             $success = [
                 'user' => $user,
             ];
     
             return $this->sendResponse($success, __('message.user.register'), HTTP_OK);
+        } catch (QueryException $e) {
+            DB::rollBack();
+            $this->sendResponse('Database error: ' . $e->getMessage, HTTP_INTERNAL_SERVER_ERROR);
         }
         
     }

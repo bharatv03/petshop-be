@@ -8,7 +8,8 @@ use App\Http\{Controllers\ApiController,
     Requests\AdminLoginRequest, Requests\AdminRegisterationRequest};
 use App\Helpers\{CommonHelper, Auth\TokenHelper, Auth\UserHelper};
 use App\Repositories\UserRepositoryInterface;
-use Illuminate\{Support\Str,HTTP\JsonResponse};
+use Illuminate\{Support\Str,HTTP\JsonResponse,Support\Facades\DB,
+    Database\QueryException};
 
 class AdminAuthController extends ApiController
 {
@@ -68,18 +69,16 @@ class AdminAuthController extends ApiController
         $input['uuid'] = (string) Str::uuid();
         $input['is_admin'] = true;
         $input['password'] = bcrypt($input['password']);
-        $user = $this->userRepository->updateByUuid($input, $uuid);
-
-        if (!isset($user['error'])) {
+        try {
+            $user = $this->userRepository->create($input);
             $success = [
                 'user' => $user,
             ];
-    
             return $this->sendResponse($success, __('message.admin.register'), HTTP_OK);
-        }else{
-            return $this->sendError('Unauthorized', $user, HTTP_UNAUTHORIZED);
+        } catch (QueryException $e) {
+            DB::rollBack();
+            $this->sendResponse('Database error: ' . $e->getMessage, HTTP_INTERNAL_SERVER_ERROR);
         }
-        
     }
 
     /**
