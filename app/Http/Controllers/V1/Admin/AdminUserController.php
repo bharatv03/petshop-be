@@ -8,6 +8,8 @@ use App\Http\{Controllers\ApiController, Requests\AdminUserUpdateRequest};
 use App\Repositories\UserRepositoryInterface;
 use Illuminate\{HTTP\JsonResponse,Support\Facades\DB,
     Database\QueryException};
+use App\Helpers\CommonHelper;
+use App\GridClass\UserGrid;
 
 class AdminUserController extends ApiController
 {
@@ -58,6 +60,18 @@ class AdminUserController extends ApiController
      *              @OA\Property(property="errors", type="object"),
      *          ),
      *      ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthorized"
+     *      ),
+     *      @OA\Response(
+     *          response=404,
+     *          description="Content not found"
+     *      ),
+     *      @OA\Response(
+     *          response=500,
+     *          description="Server Error"
+     *      ),
      * )
      */
     public function userEdit(AdminUserUpdateRequest $request, $uuid): JsonResponse
@@ -72,6 +86,94 @@ class AdminUserController extends ApiController
             ];
     
             return $this->sendResponse($success, __('message.user.register'), HTTP_OK);
+        } catch (QueryException $e) {
+            $this->sendResponse('Database error: ' . $e->getMessage, HTTP_INTERNAL_SERVER_ERROR);
+        }
+        
+    }
+
+    /**
+     * @OA\Get(
+     *      path="/api/v1/admin/user-listing",
+     *      operationId="userList",
+     *      tags={"Admin"},
+     *      summary="Display list of users",
+     *      description="Display list of users",
+     *      @OA\Response(
+     *          response=200,
+     *          description="Successfully list successfully listed",
+     *          @OA\JsonContent(
+     *              @OA\Property(data="userData", type="string"),
+     *          ),
+     *      ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthorized"
+     *      ),
+     *      @OA\Response(
+     *          response=404,
+     *          description="Content not found"
+     *      ),
+     *      @OA\Response(
+     *          response=500,
+     *          description="Server Error"
+     *      ),
+     * )
+     */
+    public function userList(): JsonResponse
+    {   
+        $gridObj = new UserGrid();
+        try {
+            $gridData = CommonHelper::GridManagement($this->userRepository, $gridObj);
+            $success = [
+                'user' => $gridData,
+            ];
+    
+            return $this->sendResponse($success, __('message.user.list'), HTTP_OK);
+        } catch (QueryException $e) {
+            $this->sendResponse('Database error: ' . $e->getMessage, HTTP_INTERNAL_SERVER_ERROR);
+        }
+        
+    }
+
+    /**
+     * @OA\Get(
+     *      path="/api/v1/admin/user-delete/{uuid}",
+     *      operationId="userDelete",
+     *      tags={"Admin"},
+     *      summary="Deletion of non admin user",
+     *      description="Deletion of non admin user",
+     *      @OA\Response(
+     *          response=200,
+     *          description="'User deleted successfully!",
+     *          @OA\JsonContent(
+     *              @OA\Property(data="userData", type="string"),
+     *          ),
+     *      ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthorized"
+     *      ),
+     *      @OA\Response(
+     *          response=404,
+     *          description="Content not found"
+     *      ),
+     *      @OA\Response(
+     *          response=500,
+     *          description="Server Error"
+     *      ),
+     * )
+     */
+    public function userDelete($uuid): JsonResponse
+    {   
+        $gridObj = new UserGrid();
+        try {
+            $deleteUser = CommonHelper::DeleteUser($uuid, $this->userRepository);
+
+            if(isset($deleteUser['success']))
+                return $this->sendResponse([], $deleteUser['success'], HTTP_OK);
+            else
+                return $this->sendError($deleteUser['error'], HTTP_OK);
         } catch (QueryException $e) {
             $this->sendResponse('Database error: ' . $e->getMessage, HTTP_INTERNAL_SERVER_ERROR);
         }

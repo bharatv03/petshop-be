@@ -72,4 +72,40 @@ class CommonHelper
             return $error;
         }
     }
+
+    public static function GridManagement($repObj, $gridObj)
+    {
+        $sortCol = 'created_at';
+        $sortType = 'asc';
+        $page = 1;
+        $limit = 10;
+        $request = request();
+        if ($request->sort)
+            $sortCol = $request->sort;
+        if ($request->desc)
+            $sortType = 'desc';
+        if ($request->page)
+            $page = $request->page;
+        if ($request->limit)
+            $limit = $request->limit;
+
+
+        $gridData = $gridObj->getField();
+        $fieldArray = [];
+        foreach ($gridData as $value) {
+            $fieldArray [] = $value['name'];
+        }
+        $gridData = $repObj->getPaginatedData($fieldArray, $limit, $page, $sortCol, $sortType);
+        return $gridData;
+    }
+
+    public static function DeleteUser($uuid, $repObj)
+    {
+        $deleteUser = $repObj->deleteByUuidNotAdmin($uuid);
+        if($deleteUser)
+            $response = ['success' => __('message.user.delete_success')];
+        else
+            $response = ['error' => __('message.user.delete_error')];
+        return $response;
+    }
 }

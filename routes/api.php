@@ -28,8 +28,8 @@ Route::prefix('v1')->group(function () {
         Route::middleware(['admin'])->group(function () {
             Route::prefix('admin')->group(function(){
                 Route::put('/user-edit/{uuid}', [AdminUserController::class, 'userEdit'])->name('admin.user.edit');
-                Route::get('/user-listing', [UserController::class, 'userList'])->name('admin.user.list');
-                Route::delete('/delete/{uuid}', [UserController::class, 'register'])->name('admin.user.delete');
+                Route::get('/user-listing', [AdminUserController::class, 'userList'])->name('admin.user.list');
+                Route::delete('/user-delete/{uuid}', [AdminUserController::class, 'userDelete'])->name('admin.user.delete');
             });
         });
 

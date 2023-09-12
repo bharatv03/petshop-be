@@ -9,6 +9,9 @@ return [
     'user' => [
         'login' => 'User Login was successfully done!',
         'register' => 'User Registration was done successfully!',
+        'list' => 'User list successfully listed!',
+        'delete_success' => 'User was deleted successfully!',
+        'delete_error' => 'User deletion for this user is not allowed!'
     ],
     'invalid_login' => 'Login credentials were invalid!',
     'exceptions' => [

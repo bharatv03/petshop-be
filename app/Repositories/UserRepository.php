@@ -57,6 +57,14 @@ class UserRepository implements UserRepositoryInterface
         $user = User::where([['uuid','=', $uuid],['is_admin','=', false]])->first();
         if ($user) {
             $user->delete();
+            return true;
         }
+        return false;
+    }
+
+    public function getPaginatedData($select = [], $limit = 2, $page = 2, $orderBy = '', $sortType = '')
+    {
+        $user = User::select($select)->orderBy($orderBy,$sortType)->paginate($limit);
+        return $user;
     }
 }

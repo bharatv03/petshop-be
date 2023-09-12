@@ -60,6 +60,18 @@ class AdminAuthController extends ApiController
      *              @OA\Property(property="errors", type="object"),
      *          ),
      *      ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthorized"
+     *      ),
+     *      @OA\Response(
+     *          response=404,
+     *          description="Content not found"
+     *      ),
+     *      @OA\Response(
+     *          response=500,
+     *          description="Server Error"
+     *      ),
      * )
      */
     public function register(AdminRegisterationRequest $request): JsonResponse
@@ -111,6 +123,18 @@ class AdminAuthController extends ApiController
      *              @OA\Property(property="message", type="string", example="The given data was invalid."),
      *              @OA\Property(property="errors", type="object"),
      *          ),
+     *      ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthorized"
+     *      ),
+     *      @OA\Response(
+     *          response=404,
+     *          description="Content not found"
+     *      ),
+     *      @OA\Response(
+     *          response=500,
+     *          description="Server Error"
      *      ),
      * )
      */
