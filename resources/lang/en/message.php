@@ -11,4 +11,8 @@ return [
         'register' => 'User Registration was done successfully!',
     ],
     'invalid_login' => 'Login credentials were invalid!',
+    'exceptions' => [
+        'not_found' => 'Content not found!',
+        'server_error' => 'Server Error!'
+    ]
 ];

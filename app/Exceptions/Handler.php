@@ -29,18 +29,24 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
-        $this->renderable(function (InvalidOrderException $e, Request $request) {
+        
+        //response to send when exception occurs
+        $response = [
+            'success' => false,
+            'error'=> '',
+            'data' => [],
+            'errors'=> []
+        ];
+        $this->renderable(function (InvalidOrderException $e, Request $request) use($response) {
             if ($request->is('api/*')) {
-                return response()->json([
-                    'message' => 'Internal server error'
-                ], 500);
+                $response['error'] = __('message.exceptions.server_error');
+                return response()->json($response, HTTP_INTERNAL_SERVER_ERROR);
             }
         });
-        $this->renderable(function (NotFoundHttpException $e, Request $request) {
+        $this->renderable(function (NotFoundHttpException $e, Request $request) use($response) {
             if ($request->is('api/*')) {
-                return response()->json([
-                    'message' => 'Record not found.'
-                ], 404);
+                $response['error'] = __('message.exceptions.not_found');
+                return response()->json($response, HTTP_NOT_FOUND);
             }
         });
     }
