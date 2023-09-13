@@ -6,8 +6,7 @@ namespace App\Http\Controllers\V1\Admin;
 
 use App\Http\{Controllers\ApiController, Requests\AdminUserUpdateRequest};
 use App\Repositories\UserRepositoryInterface;
-use Illuminate\{HTTP\JsonResponse,Support\Facades\DB,
-    Database\QueryException};
+use Illuminate\{HTTP\JsonResponse, Database\QueryException};
 use App\Helpers\CommonHelper;
 use App\GridClass\UserGrid;
 
@@ -79,9 +78,9 @@ class AdminUserController extends ApiController
                 'user' => $user,
             ];
     
-            return $this->sendResponse($success, __('message.user.register'), HTTP_OK);
+            return $this->sendResponse($success, __('message.user.edit'), HTTP_OK);
         } catch (QueryException $e) {
-            $this->sendResponse('Database error: ' . $e->getMessage, HTTP_INTERNAL_SERVER_ERROR);
+            $this->sendResponse('Database error: ' . __('message.db.query_error'), HTTP_INTERNAL_SERVER_ERROR);
         }
         
     }
@@ -97,9 +96,6 @@ class AdminUserController extends ApiController
      *      @OA\Response(
      *          response=200,
      *          description="Successfully list successfully listed",
-     *          @OA\JsonContent(
-     *              @OA\Property(property="userData", type="string"),
-     *          ),
      *      ),
      *      @OA\Response(
      *          response=401,
@@ -126,7 +122,7 @@ class AdminUserController extends ApiController
     
             return $this->sendResponse($success, __('message.user.list'), HTTP_OK);
         } catch (QueryException $e) {
-            $this->sendResponse('Database error: ' . $e->getMessage, HTTP_INTERNAL_SERVER_ERROR);
+            $this->sendResponse('Database error: ' . __('message.db.query_error'), HTTP_INTERNAL_SERVER_ERROR);
         }
         
     }
@@ -142,9 +138,6 @@ class AdminUserController extends ApiController
      *      @OA\Response(
      *          response=200,
      *          description="'User deleted successfully!",
-     *          @OA\JsonContent(
-     *              @OA\Property(property="userData", type="string"),
-     *          ),
      *      ),
      *      @OA\Response(
      *          response=401,
@@ -170,7 +163,7 @@ class AdminUserController extends ApiController
             else
                 return $this->sendError($deleteUser['error'], HTTP_OK);
         } catch (QueryException $e) {
-            $this->sendResponse('Database error: ' . $e->getMessage, HTTP_INTERNAL_SERVER_ERROR);
+            $this->sendResponse('Database error: ' . __('message.db.query_error'), HTTP_INTERNAL_SERVER_ERROR);
         }
         
     }

@@ -6,10 +6,9 @@ namespace App\Http\Controllers\V1\Admin;
 
 use App\Http\{Controllers\ApiController, 
     Requests\AdminLoginRequest, Requests\AdminRegisterationRequest};
-use App\Helpers\{CommonHelper, Auth\TokenHelper, Auth\UserHelper};
+use App\Helpers\CommonHelper;
 use App\Repositories\UserRepositoryInterface;
-use Illuminate\{Support\Str,HTTP\JsonResponse,Support\Facades\DB,
-    Database\QueryException};
+use Illuminate\{Support\Str, HTTP\JsonResponse, Database\QueryException};
 
 class AdminAuthController extends ApiController
 {
@@ -81,7 +80,7 @@ class AdminAuthController extends ApiController
             ];
             return $this->sendResponse($success, __('message.admin.register'), HTTP_OK);
         } catch (QueryException $e) {
-            $this->sendResponse('Database error: ' . $e->getMessage, HTTP_INTERNAL_SERVER_ERROR);
+            $this->sendResponse('Database error: '. __('message.db.query_error'), HTTP_INTERNAL_SERVER_ERROR);
         }
     }
 

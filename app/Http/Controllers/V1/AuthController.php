@@ -6,10 +6,9 @@ namespace App\Http\Controllers\V1;
 
 use App\Http\{Controllers\ApiController, 
     Requests\UserLoginRequest, Requests\UserRegistrationRequest};
-use App\Helpers\{CommonHelper, Auth\TokenHelper, Auth\UserHelper};
+use App\Helpers\CommonHelper;
 use App\Repositories\UserRepositoryInterface;
-use Illuminate\{Support\Str,HTTP\JsonResponse,Support\Facades\DB,
-    Database\QueryException};
+use Illuminate\{Support\Str,HTTP\JsonResponse, Database\QueryException};
 
 
 class AuthController extends ApiController
@@ -83,7 +82,7 @@ class AuthController extends ApiController
     
             return $this->sendResponse($success, __('message.user.register'), HTTP_OK);
         } catch (QueryException $e) {
-            $this->sendResponse('Database error: ' . $e->getMessage, HTTP_INTERNAL_SERVER_ERROR);
+            $this->sendResponse('Database error: ' . __('message.db.query_error'), HTTP_INTERNAL_SERVER_ERROR);
         }
         
     }
@@ -137,6 +136,6 @@ class AuthController extends ApiController
         if(isset($response['error']))
             return $this->sendError($response['error'], HTTP_UNPROCESSABLE_ENTITY);
         else
-            return $this->sendResponse($response, __('message.admin.login'), HTTP_OK);
+            return $this->sendResponse($response, __('message.user.login'), HTTP_OK);
     }
 }
