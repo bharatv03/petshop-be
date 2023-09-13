@@ -21,7 +21,7 @@ class AdminUserController extends ApiController
     }
 
     /**
-     * @OA\Post(
+     * @OA\Put(
      *      path="/api/v1/admin/user-edit/",
      *      operationId="useEdit",
      *      tags={"Admin"},
@@ -49,17 +49,10 @@ class AdminUserController extends ApiController
      *      @OA\Response(
      *          response=200,
      *          description="Successfully updated",
-     *          @OA\JsonContent(
-     *              @OA\Property(property="userData", type="string"),
-     *          ),
      *      ),
      *      @OA\Response(
      *          response=422,
      *          description="Validation error",
-     *          @OA\JsonContent(
-     *              @OA\Property(property="message", type="string", example="The given data was invalid."),
-     *              @OA\Property(property="errors", type="object"),
-     *          ),
      *      ),
      *      @OA\Response(
      *          response=401,
@@ -139,7 +132,7 @@ class AdminUserController extends ApiController
     }
 
     /**
-     * @OA\Get(
+     * @OA\Delete(
      *      path="/api/v1/admin/user-delete/{uuid}",
      *      operationId="userDelete",
      *      tags={"Admin"},
@@ -169,7 +162,6 @@ class AdminUserController extends ApiController
      */
     public function userDelete($uuid): JsonResponse
     {
-        $gridObj = new UserGrid();
         try {
             $deleteUser = CommonHelper::DeleteUser($uuid, $this->userRepository);
 

@@ -15,10 +15,6 @@ use App\Http\Controllers\V1\{AuthController, UserController, Admin\AdminAuthCont
 | be assigned to the "api" middleware group. Make something great!
 |
 */
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
-
 // routes defined for version 1
 Route::prefix('v1')->group(function () {
     //jwt authenticated routes    
@@ -35,7 +31,9 @@ Route::prefix('v1')->group(function () {
 
         //routes which will be allowed to authenticated admin users
         Route::prefix('user')->group(function(){
-            Route::delete('/delete', [UserController::class, 'register'])->name('admin.user.delete');
+            Route::get('/', [UserController::class, 'index'])->name('user.view');
+            Route::delete('/delete', [UserController::class, 'userDelete'])->name('user.delete');
+            Route::put('/edit', [UserController::class, 'userEdit'])->name('user.edit');
         });
     });
 

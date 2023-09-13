@@ -108,4 +108,15 @@ class CommonHelper
             $response = ['error' => __('message.user.delete_error')];
         return $response;
     }
+
+    public static function GetUserDetails($repObj, $uuid)
+    {
+        $userDetails = $repObj->getByFieldSingleRecord('uuid', $uuid);
+        
+        if($userDetails)
+            $response = ['success' => __('message.user.fetch_success'),'data' => $userDetails];
+        else
+            $response = ['error' => __('message.user.fetch_error')];
+        return $response;
+    }
 }

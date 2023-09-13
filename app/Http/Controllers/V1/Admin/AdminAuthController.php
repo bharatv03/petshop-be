@@ -48,17 +48,10 @@ class AdminAuthController extends ApiController
      *      @OA\Response(
      *          response=200,
      *          description="Successful registration",
-     *          @OA\JsonContent(
-     *              @OA\Property(property="token", type="string"),
-     *          ),
      *      ),
      *      @OA\Response(
      *          response=422,
      *          description="Validation error",
-     *          @OA\JsonContent(
-     *              @OA\Property(property="message", type="string", example="The given data was invalid."),
-     *              @OA\Property(property="errors", type="object"),
-     *          ),
      *      ),
      *      @OA\Response(
      *          response=401,
@@ -112,17 +105,10 @@ class AdminAuthController extends ApiController
      *      @OA\Response(
      *          response=200,
      *          description="Login successfull",
-     *          @OA\JsonContent(
-     *              @OA\Property(property="token", type="string", example="your-jwt-token"),
-     *          ),
      *      ),
      *      @OA\Response(
      *          response=422,
      *          description="Validation error",
-     *          @OA\JsonContent(
-     *              @OA\Property(property="message", type="string", example="The given data was invalid."),
-     *              @OA\Property(property="errors", type="object"),
-     *          ),
      *      ),
      *      @OA\Response(
      *          response=401,

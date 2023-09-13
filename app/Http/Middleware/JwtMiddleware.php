@@ -20,6 +20,7 @@ class JwtMiddleware
 
         try {
             $token = $commonHelper->GetAndDecodeJWT();
+            $request->merge(['uuidHeader' => $token->data->uuid]);
         } catch (Exception $e) {
             $response = [
                 'success' => false,
