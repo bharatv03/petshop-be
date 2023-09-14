@@ -12,7 +12,11 @@ return [
         'list' => 'User list successfully listed!',
         'delete_success' => 'User was deleted successfully!',
         'delete_error' => 'User deletion for this user is not allowed!',
-        'edit' => 'User updated successfully!'
+        'edit' => 'User updated successfully!',
+        'password_reset' => 'Password updated successfully!',
+        'password_reset_sent' => 'Password token sent successfully!',
+        'email_not_found' => 'Email not found!',
+        'invalid_token' => 'Invalid Token!'
     ],
     'invalid_login' => 'Login credentials were invalid!',
     'exceptions' => [

@@ -57,13 +57,13 @@ class CommonHelper
         return $token;
     }
 
-    public static function LoginAttempt($input, $remember)
+    public static function LoginAttempt($input, $remember, $jwtTokenRepo)
     {
         if (Auth::attempt($input, $remember))
         {
             $user = Auth::user();
             $tokenHelper = new TokenHelper;
-            $token = $tokenHelper->GenerateToken($user);
+            $token = $tokenHelper->GenerateToken($user, $jwtTokenRepo);
             $success = ['user' => $user, 'token' => $token];
             return $success;
         }
@@ -118,5 +118,12 @@ class CommonHelper
         else
             $response = ['error' => __('message.user.fetch_error')];
         return $response;
+    }
+
+    public static function Logout($uniqueToken, $jwtTokenRepo)
+    {
+        $data['expires_at'] = date('Y-m-d H:i:s');
+        $where['unique_id'] = $uniqueToken;
+        $jwtTokenRepo->updateToken($where, $data);
     }
 }

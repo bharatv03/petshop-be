@@ -2,8 +2,8 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\V1\{AuthController, UserController, Admin\AdminAuthController, 
-    Admin\AdminUserController};
+use App\Http\Controllers\{V1\AuthController, V1\UserController, V1\Admin\AdminAuthController, 
+    V1\Admin\AdminUserController, Auth\ForgotPasswordController, Auth\ResetPasswordController};
 
 /*
 |--------------------------------------------------------------------------
@@ -26,6 +26,7 @@ Route::prefix('v1')->group(function () {
                 Route::put('/user-edit/{uuid}', [AdminUserController::class, 'userEdit'])->name('admin.user.edit');
                 Route::get('/user-listing', [AdminUserController::class, 'userList'])->name('admin.user.list');
                 Route::delete('/user-delete/{uuid}', [AdminUserController::class, 'userDelete'])->name('admin.user.delete');
+                Route::get('/logout',[AdminAuthController::class, 'logout'])->name('admin.logout');
             });
         });
 
@@ -34,6 +35,7 @@ Route::prefix('v1')->group(function () {
             Route::get('/', [UserController::class, 'index'])->name('user.view');
             Route::delete('/delete', [UserController::class, 'userDelete'])->name('user.delete');
             Route::put('/edit', [UserController::class, 'userEdit'])->name('user.edit');
+            Route::get('/logout',[AuthController::class, 'logout'])->name('user.logout');
         });
     });
 
@@ -41,6 +43,8 @@ Route::prefix('v1')->group(function () {
     Route::prefix('user')->group(function(){
         Route::post('/create', [AuthController::class, 'register'])->name('user.register');
         Route::post('/login', [AuthController::class, 'login'])->name('user.login');
+        Route::post('/forgot-password', [ForgotPasswordController::class, 'sendResetLinkEmail'])->name('user.forgot_password');
+        Route::post('/reset-password-token', [ResetPasswordController::class, 'resetPassword'])->name('user.reset_password');
     });
 
     //routes which are non authenticated routes for users having prefix admin

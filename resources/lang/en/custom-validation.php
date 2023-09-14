@@ -32,4 +32,8 @@ return [
         'required' => 'The :attribute field is required.',
         'digits_between' => 'The :attribute should be between :min & :max',
     ],
+    'token' => [
+        'required' => 'The :attribute field is required.',
+        'string' => 'The :attribute should string',
+    ],
 ];

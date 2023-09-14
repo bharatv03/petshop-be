@@ -7,16 +7,18 @@ namespace App\Http\Controllers\V1\Admin;
 use App\Http\{Controllers\ApiController, 
     Requests\AdminLoginRequest, Requests\AdminRegisterationRequest};
 use App\Helpers\CommonHelper;
-use App\Repositories\UserRepositoryInterface;
+use App\Repositories\{UserRepository, JwtTokenRepository};
 use Illuminate\{Support\Str, HTTP\JsonResponse, Database\QueryException};
+use Illuminate\Http\Request;
 
 class AdminAuthController extends ApiController
 {
-    protected $userRepository;
+    protected $userRepository, $jwtTokenRepository;
 
-    public function __construct(UserRepositoryInterface $userRepository)
+    public function __construct(UserRepository $userRepository, JwtTokenRepository $jwtTokenRepository)
     {
         $this->userRepository = $userRepository;
+        $this->jwtTokenRepository = $jwtTokenRepository;
     }
 
     /**
@@ -128,11 +130,43 @@ class AdminAuthController extends ApiController
         $input = $request->safe()->only(['email', 'password']);
         $remember = $request->remember;
         $input['is_admin'] = true;
-        $response = CommonHelper::LoginAttempt($input, $remember);
+        $response = CommonHelper::LoginAttempt($input, $remember, $this->jwtTokenRepository);
 
         if(isset($response['error']))
             return $this->sendError($response['error'], HTTP_UNPROCESSABLE_ENTITY);
         else
             return $this->sendResponse($response, __('message.admin.login'), HTTP_OK);
+    }
+
+    /**
+     * @OA\Get(
+     *      path="/api/v1/admin/logout",
+     *      operationId="admin.logout",
+     *      tags={"Admin"},
+     *      summary="Admin Logout",
+     *      description="Logout a admin user and update expire date in DB",
+     *      @OA\Response(
+     *          response=200,
+     *          description="Login successfull",
+     *      ),
+     *      @OA\Response(
+     *          response=401,
+     *          description="Unauthorized"
+     *      ),
+     *      @OA\Response(
+     *          response=404,
+     *          description="Content not found"
+     *      ),
+     *      @OA\Response(
+     *          response=500,
+     *          description="Server Error"
+     *      ),
+     * )
+     */
+    public function logout(Request $request): JsonResponse
+    {
+        $uniqueId = $request->uuidHeader.$request->tokenId;
+        $response = CommonHelper::Logout($uniqueId, $this->jwtTokenRepository);
+        return $this->sendResponse($response, __('message.user.logout'), HTTP_OK);
     }
 }

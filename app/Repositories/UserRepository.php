@@ -67,4 +67,14 @@ class UserRepository implements UserRepositoryInterface
         $user = User::select($select)->orderBy($orderBy,$sortType)->paginate($limit);
         return $user;
     }
+
+    public function updateDataWhere($where, $data)
+    {
+        $user = User::where($where)->first();
+        if ($user) {
+            $user->update($data);
+            return $user;
+        }
+        return null;
+    }
 }
