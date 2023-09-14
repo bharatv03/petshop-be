@@ -96,7 +96,6 @@ class AuthController extends ApiController
      *      tags={"User"},
      *      summary="User Login",
      *      description="Login a user and return Token",
-     *      security={{"bearer_token":{}}},
      *      @OA\RequestBody(
      *          @OA\MediaType(
      *            mediaType="application/x-www-form-urlencoded",
@@ -148,6 +147,7 @@ class AuthController extends ApiController
      *      operationId="user.logout",
      *      tags={"User"},
      *      summary="User Logout",
+     *      security={{"bearer_token":{}}},
      *      description="Logout a user and update expire date in DB",
      *      @OA\Response(
      *          response=200,

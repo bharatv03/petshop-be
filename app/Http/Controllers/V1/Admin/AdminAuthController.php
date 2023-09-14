@@ -145,6 +145,7 @@ class AdminAuthController extends ApiController
      *      tags={"Admin"},
      *      summary="Admin Logout",
      *      description="Logout a admin user and update expire date in DB",
+     *      security={{"bearer_token":{}}},
      *      @OA\Response(
      *          response=200,
      *          description="Login successfull",

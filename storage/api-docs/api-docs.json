@@ -258,7 +258,12 @@
                     "500": {
                         "description": "Server Error"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
             }
         },
         "/api/v1/admin/user-edit/": {
@@ -547,7 +552,12 @@
                     "500": {
                         "description": "Server Error"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "bearer_token": []
+                    }
+                ]
             }
         },
         "/api/v1/user/": {
