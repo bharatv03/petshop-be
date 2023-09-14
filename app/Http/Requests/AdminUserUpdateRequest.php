@@ -6,14 +6,14 @@ use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Contracts\Validation\Validator;
 use App\Helpers\Auth\UserHelper;
-use App\Repositories\UserRepositoryInterface;
+use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
 
 class AdminUserUpdateRequest extends FormRequest
 {
     protected $userRepository, $userId;
 
-    public function __construct(Request $request, UserRepositoryInterface $userRepository)
+    public function __construct(Request $request, UserRepository $userRepository)
     {
         $uuid = $request->segment(5);
         $this->userRepository = $userRepository;

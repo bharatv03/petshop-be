@@ -9,7 +9,7 @@ use App\Http\{Controllers\ApiController,
     Requests\ResetPasswordRequest};
 use App\Repositories\{PasswordResetTokenRepository, UserRepository};
 
-class ResetPasswordController extends Controller
+class ResetPasswordController extends ApiController
 {
     protected $passwordTokenRepository, $userRepository;
 

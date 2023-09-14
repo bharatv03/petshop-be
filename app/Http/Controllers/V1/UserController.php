@@ -164,7 +164,7 @@ class UserController extends ApiController
             else
                 return $this->sendError($deleteUser['error'], HTTP_OK);
         } catch (QueryException $e) {
-            $this->sendResponse('Database error: ' . __('message.db.query_error'), HTTP_INTERNAL_SERVER_ERROR);
+            return $this->sendResponse('Database error: ' . __('message.db.query_error'), HTTP_INTERNAL_SERVER_ERROR);
         }
         
     }
