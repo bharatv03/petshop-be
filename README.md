@@ -34,6 +34,8 @@ List any software and dependencies that need to be installed to run this project
 
 2. Install libraries 
 
+    composer install
+
 ## Usage
 
 After cloning is done please use following commands to activate your project
