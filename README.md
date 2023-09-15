@@ -44,6 +44,10 @@ After cloning is done please use following commands to activate your project
 
     cp .env.example .env
 
+    The below command will let your login procedure work smoothly
+
+    php artisan jwt:secret
+
 2. This command will activate your above file on the project for being able to use
     
     php artisan config:cache
@@ -60,15 +64,11 @@ After cloning is done please use following commands to activate your project
 
     php artisan db:seed
 
-6. The below command will let your login procedure work smoothly
-
-    php artisan jwt:secret
-
-7. The command below will start the server on local machine
+6. The command below will start the server on local machine
 
     php artisan serve
 
-8. After running the server command your URL will be active with below URL:
+7. After running the server command your URL will be active with below URL:
 
     https://localhost:8000
 
