@@ -43,6 +43,7 @@ After cloning is done please use following commands to activate your project
 1. This command will help you point the project to accurate Database
 
     cp .env.example .env
+    **Please update database details in .env file as per your server.
 
     The below command will let your login procedure work smoothly
 
@@ -50,7 +51,7 @@ After cloning is done please use following commands to activate your project
 
 2. This command will activate your above file on the project for being able to use
     
-    php artisan config:cache
+    php artisan config:clear
 
 3. The below command will create database without letting you create it manually
     
