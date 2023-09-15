@@ -4,16 +4,21 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\V1\Admin;
 
-use App\Http\{Controllers\ApiController, 
-    Requests\AdminLoginRequest, Requests\AdminRegisterationRequest};
-use App\Helpers\CommonHelper;
-use App\Repositories\{UserRepository, JwtTokenRepository};
-use Illuminate\{Support\Str, HTTP\JsonResponse, Database\QueryException};
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use App\Helpers\CommonHelper;
+use Illuminate\HTTP\JsonResponse;
+use App\Repositories\UserRepository;
+use App\Http\Controllers\ApiController;
+use Illuminate\Database\QueryException;
+use App\Http\Requests\AdminLoginRequest;
+use App\Repositories\JwtTokenRepository;
+use App\Http\Requests\AdminRegisterationRequest;
 
 class AdminAuthController extends ApiController
 {
-    protected $userRepository, $jwtTokenRepository;
+    protected $userRepository;
+    protected $jwtTokenRepository;
 
     public function __construct(UserRepository $userRepository, JwtTokenRepository $jwtTokenRepository)
     {
@@ -130,12 +135,13 @@ class AdminAuthController extends ApiController
         $input = $request->safe()->only(['email', 'password']);
         $remember = $request->remember;
         $input['is_admin'] = true;
-        $response = CommonHelper::LoginAttempt($input, $remember, $this->jwtTokenRepository);
+        $response = CommonHelper::loginAttempt($input, $remember, $this->jwtTokenRepository);
 
-        if(isset($response['error']))
+        if (isset($response['error'])) {
             return $this->sendError($response['error'], HTTP_UNPROCESSABLE_ENTITY);
-        else
+        } else {
             return $this->sendResponse($response, __('message.admin.login'), HTTP_OK);
+        }
     }
 
     /**
@@ -167,7 +173,7 @@ class AdminAuthController extends ApiController
     public function logout(Request $request): JsonResponse
     {
         $uniqueId = $request->uuidHeader.$request->tokenId;
-        $response = CommonHelper::Logout($uniqueId, $this->jwtTokenRepository);
+        $response = CommonHelper::logout($uniqueId, $this->jwtTokenRepository);
         return $this->sendResponse($response, __('message.user.logout'), HTTP_OK);
     }
 }

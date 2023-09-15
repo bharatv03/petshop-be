@@ -7,7 +7,6 @@ use App\Models\JwtToken;
 
 class JwtTokenRepository implements JwtTokenRepositoryInterface
 {
-
     public function addToken($input)
     {
         return JwtToken::insert($input);
@@ -20,7 +19,7 @@ class JwtTokenRepository implements JwtTokenRepositoryInterface
 
     public function updateToken($where, $data)
     {
-        $passwordToken = JwtToken::where($where)->update($data);
+        JwtToken::where($where)->update($data);
         return true;
     }
 }

@@ -7,7 +7,6 @@ use App\Models\PasswordResetToken;
 
 class PasswordResetTokenRepository implements PasswordResetTokenRepositoryInterface
 {
-
     public function addToken($input)
     {
         return PasswordResetToken::insert($input);
@@ -20,7 +19,7 @@ class PasswordResetTokenRepository implements PasswordResetTokenRepositoryInterf
 
     public function deleteToken($where)
     {
-        $passwordToken = PasswordResetToken::where($where)->delete();
+        PasswordResetToken::where($where)->delete();
         return true;
     }
 }

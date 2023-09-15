@@ -4,17 +4,21 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\V1;
 
-use App\Http\{Controllers\ApiController, 
-    Requests\UserLoginRequest, Requests\UserRegistrationRequest};
-use App\Helpers\CommonHelper;
-use App\Repositories\{UserRepository, JwtTokenRepository};
-use Illuminate\{Support\Str,HTTP\JsonResponse, Database\QueryException};
+use Illuminate\Support\Str;
 use Illuminate\Http\Request;
-
+use App\Helpers\CommonHelper;
+use Illuminate\HTTP\JsonResponse;
+use App\Repositories\UserRepository;
+use App\Http\Controllers\ApiController;
+use App\Http\Requests\UserLoginRequest;
+use Illuminate\Database\QueryException;
+use App\Repositories\JwtTokenRepository;
+use App\Http\Requests\UserRegistrationRequest;
 
 class AuthController extends ApiController
 {
-    protected $userRepository, $jwtTokenRepository;
+    protected $userRepository;
+    protected $jwtTokenRepository;
 
     public function __construct(UserRepository $userRepository, JwtTokenRepository $jwtTokenRepository)
     {
@@ -81,12 +85,11 @@ class AuthController extends ApiController
             $success = [
                 'user' => $user,
             ];
-    
+
             return $this->sendResponse($success, __('message.user.register'), HTTP_OK);
         } catch (QueryException $e) {
             $this->sendResponse('Database error: ' . __('message.db.query_error'), HTTP_INTERNAL_SERVER_ERROR);
         }
-        
     }
 
     /**
@@ -133,12 +136,13 @@ class AuthController extends ApiController
         $input = $request->safe()->only(['email', 'password']);
         $remember = $request->remember;
         $input['is_admin'] = false;
-        $response = CommonHelper::LoginAttempt($input, $remember, $this->jwtTokenRepository);
+        $response = CommonHelper::loginAttempt($input, $remember, $this->jwtTokenRepository);
 
-        if(isset($response['error']))
+        if (isset($response['error'])) {
             return $this->sendError($response['error'], HTTP_UNPROCESSABLE_ENTITY);
-        else
+        } else {
             return $this->sendResponse($response, __('message.user.login'), HTTP_OK);
+        }
     }
 
     /**
@@ -170,7 +174,7 @@ class AuthController extends ApiController
     public function logout(Request $request): JsonResponse
     {
         $uniqueId = $request->uuidHeader.$request->tokenId;
-        $response = CommonHelper::Logout($uniqueId, $this->jwtTokenRepository);
+        $response = CommonHelper::logout($uniqueId, $this->jwtTokenRepository);
         return $this->sendResponse($response, __('message.user.logout'), HTTP_OK);
     }
 }

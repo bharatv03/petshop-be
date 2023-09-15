@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\{Request, Response, JsonResponse};
+use Illuminate\Http\JsonResponse;
 
 class APIController extends Controller
 {
@@ -15,8 +15,8 @@ class APIController extends Controller
         $response = [
             'success' => true,
             'data' => $data,
-            'error' => NULL,
-            'message' => $message
+            'error' => null,
+            'message' => $message,
         ];
 
         return response()->json($response, $status);
@@ -26,9 +26,9 @@ class APIController extends Controller
     {
         $response = [
             'success' => false,
-            'error'=> $message,
+            'error' => $message,
             'data' => [],
-            'errors'=> []
+            'errors' => [],
 
         ];
 

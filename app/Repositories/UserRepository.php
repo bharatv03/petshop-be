@@ -64,8 +64,7 @@ class UserRepository implements UserRepositoryInterface
 
     public function getPaginatedData($select = [], $limit = 2, $page = 2, $orderBy = '', $sortType = '')
     {
-        $user = User::select($select)->orderBy($orderBy,$sortType)->paginate($limit);
-        return $user;
+        return User::select($select)->orderBy($orderBy, $sortType)->paginate($limit);
     }
 
     public function updateDataWhere($where, $data)

@@ -3,8 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
 use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class AdminLoginRequest extends FormRequest
 {
@@ -35,7 +35,7 @@ class AdminLoginRequest extends FormRequest
             'email.required' => __('custom-validation.email.required'),
             'email.email' => __('custom-validation.email.email'),
             'password.required' => __('custom-validation.password.required'),
-            'password.min' => __('custom-validation.password.min', ['min' => 8])
+            'password.min' => __('custom-validation.password.min', ['min' => 8]),
         ];
     }
 

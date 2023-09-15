@@ -2,11 +2,11 @@
 
 namespace App\Exceptions;
 
-use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Illuminate\Http\Request;
 use App\Exceptions\InvalidOrderException;
+use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class Handler extends ExceptionHandler
 {
@@ -29,21 +29,23 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
-        
+
         //response to send when exception occurs
         $response = [
             'success' => false,
-            'error'=> '',
+            'error' => '',
             'data' => [],
-            'errors'=> []
+            'errors' => [],
         ];
-        $this->renderable(function (InvalidOrderException $e, Request $request) use($response) {
+
+        $this->renderable(function (InvalidOrderException $e, Request $request) use ($response) {
             if ($request->is('api/*')) {
                 $response['error'] = __('message.exceptions.server_error');
                 return response()->json($response, HTTP_INTERNAL_SERVER_ERROR);
             }
         });
-        $this->renderable(function (NotFoundHttpException $e, Request $request) use($response) {
+
+        $this->renderable(function (NotFoundHttpException $e, Request $request) use ($response) {
             if ($request->is('api/*')) {
                 $response['error'] = __('message.exceptions.not_found');
                 return response()->json($response, HTTP_NOT_FOUND);

@@ -3,7 +3,6 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
 
 class CreateDatabase extends Command
 {
@@ -26,24 +25,23 @@ class CreateDatabase extends Command
      */
     public function handle()
     {
-        try{
+        try {
             $dbname = $this->argument('dbname');
 
             $conn = mysqli_connect(
-                config('database.connections.mysql.host'), 
-                env('DB_USERNAME'), 
+                config('database.connections.mysql.host'),
+                env('DB_USERNAME'),
                 env('DB_PASSWORD')
             );
-            if(!$conn ) {
+            if (!$conn) {
                 $this->info("Connection failure");
             }
 
             $sql = 'CREATE Database IF NOT EXISTS '.$dbname;
-            
-            $exec_query = mysqli_query( $conn, $sql);
+
+            mysqli_query($conn, $sql);
             $this->info("Database '$dbname' created if not existed");
-        }
-        catch (\Exception $e){
+        } catch (\Exception $e) {
             $this->error($e->getMessage());
         }
     }

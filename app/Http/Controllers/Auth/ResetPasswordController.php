@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers\Auth;
 
-use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Hash;
-use App\Http\{Controllers\ApiController, 
-    Requests\ResetPasswordRequest};
-use App\Repositories\{PasswordResetTokenRepository, UserRepository};
+use App\Repositories\UserRepository;
+use App\Http\Controllers\ApiController;
+use App\Http\Requests\ResetPasswordRequest;
+use App\Repositories\PasswordResetTokenRepository;
 
 class ResetPasswordController extends ApiController
 {
-    protected $passwordTokenRepository, $userRepository;
+    protected $passwordTokenRepository;
+    protected $userRepository;
 
-    public function __construct(UserRepository $userRepository, PasswordResetTokenRepository $passwordTokenRepository, )
+    public function __construct(UserRepository $userRepository,
+    PasswordResetTokenRepository $passwordTokenRepository)
     {
         $this->passwordTokenRepository = $passwordTokenRepository;
         $this->userRepository = $userRepository;
@@ -64,16 +64,15 @@ class ResetPasswordController extends ApiController
     {
         $input = $request->safe()->only(['email','token']);
         $checkToken = $this->passwordTokenRepository->checkToken($input);
-        
+
         if (!$checkToken) {
             return $this->sendResponse([], __('message.user.invalid_token'), HTTP_UNAUTHORIZED);
         }
         $data['password'] = bcrypt($request->password);
         $where['email'] = $input['email'];
-        
-        $updatePassword = $this->userRepository->updateDataWhere($where, $data);
-        $deleteToken = $this->passwordTokenRepository->deleteToken($where);
+
+        $this->userRepository->updateDataWhere($where, $data);
+        $this->passwordTokenRepository->deleteToken($where);
         return $this->sendResponse([], __('message.user.password_reset'), HTTP_OK);
     }
 }
-

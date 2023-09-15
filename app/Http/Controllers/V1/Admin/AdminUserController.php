@@ -4,11 +4,13 @@ declare(strict_types=1);
 
 namespace App\Http\Controllers\V1\Admin;
 
-use App\Http\{Controllers\ApiController, Requests\AdminUserUpdateRequest};
-use App\Repositories\UserRepository;
-use Illuminate\{HTTP\JsonResponse, Database\QueryException};
-use App\Helpers\CommonHelper;
 use App\GridClass\UserGrid;
+use App\Helpers\CommonHelper;
+use Illuminate\HTTP\JsonResponse;
+use App\Repositories\UserRepository;
+use App\Http\Controllers\ApiController;
+use Illuminate\Database\QueryException;
+use App\Http\Requests\AdminUserUpdateRequest;
 
 class AdminUserController extends ApiController
 {
@@ -71,18 +73,17 @@ class AdminUserController extends ApiController
     {
         $input = $request->safe()->all();
         $input['password'] = bcrypt($input['password']);
-        
+
         try {
             $user = $this->userRepository->updateByUuid($input, $uuid);
             $success = [
                 'user' => $user,
             ];
-    
+
             return $this->sendResponse($success, __('message.user.edit'), HTTP_OK);
         } catch (QueryException $e) {
             $this->sendResponse('Database error: ' . __('message.db.query_error'), HTTP_INTERNAL_SERVER_ERROR);
         }
-        
     }
 
     /**
@@ -115,16 +116,15 @@ class AdminUserController extends ApiController
     {
         $gridObj = new UserGrid();
         try {
-            $gridData = CommonHelper::GridManagement($this->userRepository, $gridObj);
+            $gridData = CommonHelper::gridManagement($this->userRepository, $gridObj);
             $success = [
                 'user' => $gridData,
             ];
-    
+
             return $this->sendResponse($success, __('message.user.list'), HTTP_OK);
         } catch (QueryException $e) {
             $this->sendResponse('Database error: ' . __('message.db.query_error'), HTTP_INTERNAL_SERVER_ERROR);
         }
-        
     }
 
     /**
@@ -156,15 +156,15 @@ class AdminUserController extends ApiController
     public function userDelete($uuid): JsonResponse
     {
         try {
-            $deleteUser = CommonHelper::DeleteUser($uuid, $this->userRepository);
+            $deleteUser = CommonHelper::deleteUser($uuid, $this->userRepository);
 
-            if(isset($deleteUser['success']))
+            if (isset($deleteUser['success'])) {
                 return $this->sendResponse([], $deleteUser['success'], HTTP_OK);
-            else
+            } else {
                 return $this->sendError($deleteUser['error'], HTTP_OK);
+            }
         } catch (QueryException $e) {
             $this->sendResponse('Database error: ' . __('message.db.query_error'), HTTP_INTERNAL_SERVER_ERROR);
         }
-        
     }
 }

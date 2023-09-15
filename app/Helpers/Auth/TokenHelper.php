@@ -12,42 +12,35 @@ class TokenHelper
      */
 
     // generate token
-    public function GenerateToken($user, $jwtTokenRepo)
+    public function generateToken($user, $jwtTokenRepo)
     {
-        $secretKey  = env('JWT_SECRET');
-        $tokenId    = base64_encode(random_bytes(16));
-        $issuedAt   = new DateTimeImmutable();
-        $expire     = $issuedAt->modify('+10 minutes')->getTimestamp();
-        $serverName = env('APP_URL');
-        $uuid   = $user->uuid;
-
+        $tokenId = base64_encode(random_bytes(16));
+        $issuedAt = new DateTimeImmutable();
+        $expire = $issuedAt->modify('+10 minutes')->getTimestamp();
+        $uuid = $user->uuid;
         // Create the token as an array
         $data = [
-            'iat'  => $issuedAt->getTimestamp(),
-            'jti'  => $tokenId,
-            'iss'  => $serverName,
-            'nbf'  => $issuedAt->getTimestamp(),
-            'exp'  => $expire,
+            'iat' => $issuedAt->getTimestamp(),
+            'jti' => $tokenId,
+            'iss' => env('APP_URL'),
+            'nbf' => $issuedAt->getTimestamp(),
+            'exp' => $expire,
             'data' => [
                 'uuid' => $uuid,
-            ]
+            ],
         ];
-
         // Encode the array to a JWT string.
         $token = JWT::encode(
             $data,
-            $secretKey,
+            env('JWT_SECRET'),
             'HS256'
         );
-        $issuedDate = date('Y-m-d H:i:s',$issuedAt->getTimestamp());
-        $expiersAt = date('Y-m-d H:i:s',$expire);
-
-        $dbData = ['user_id' => $user->id, 'unique_id' => $uuid.$tokenId, 'token_title' => __('message.login.title'), 
-                    'restrictions' => NULL, 'permissions' => NULL, 'created_at' => $issuedDate,
-                    'updated_at' => $issuedDate, 'expires_at' => $expiersAt, 'last_used_at' => $issuedDate,
-                    'refreshed_at' => NULL];
+        $issuedDate = date('Y-m-d H:i:s', $issuedAt->getTimestamp());
+        $dbData = ['user_id' => $user->id, 'unique_id' => $uuid.$tokenId, 'token_title' => __('message.login.title'),
+                    'restrictions' => null, 'permissions' => null, 'created_at' => $issuedDate,
+                    'updated_at' => $issuedDate, 'expires_at' => date('Y-m-d H:i:s', $expire),
+                    'last_used_at' => $issuedDate, 'refreshed_at' => null];
         $jwtTokenRepo->addToken($dbData);
-
         return $token;
     }
 }

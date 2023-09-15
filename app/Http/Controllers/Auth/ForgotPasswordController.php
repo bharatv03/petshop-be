@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Http\Controllers\Controller;
 use Illuminate\Support\Str;
-use Illuminate\Support\Facades\Mail;
-use App\Http\{Controllers\ApiController, 
-    Requests\ForgetPasswordRequest};
-use App\Repositories\{PasswordResetTokenRepository, UserRepository};
+use App\Repositories\UserRepository;
+use App\Http\Controllers\ApiController;
+use App\Http\Requests\ForgetPasswordRequest;
+use App\Repositories\PasswordResetTokenRepository;
 
 class ForgotPasswordController extends ApiController
 {
-    protected $passwordResetTokenRepository, $userRepository;
+    protected $passwordResetTokenRepository;
+    protected $userRepository;
 
-    public function __construct(PasswordResetTokenRepository $passwordResetTokenRepository, 
+    public function __construct(PasswordResetTokenRepository $passwordResetTokenRepository,
     UserRepository $userRepository)
     {
         $this->passwordResetTokenRepository = $passwordResetTokenRepository;
@@ -60,26 +60,24 @@ class ForgotPasswordController extends ApiController
      */
     public function sendResetLinkEmail(ForgetPasswordRequest $request)
     {
-        $user = $this->userRepository->getByFieldSingleRecord('email',$request->email);
+        $user = $this->userRepository->getByFieldSingleRecord('email', $request->email);
 
         if (!$user) {
-            return $this->sendResponse( __('message.user.email_not_found'), HTTP_NOT_FOUND);
+            return $this->sendResponse(__('message.user.email_not_found'), HTTP_NOT_FOUND);
         }
 
         $checkToken = $this->passwordResetTokenRepository->checkToken(['email' => $request->email]);
-        if(!$checkToken){
+        if (!$checkToken) {
             // Generate a unique token
             $token = Str::random(60);
             $data = ['email' => $request->email, 'token' => $token];
 
-            $addToken = $this->passwordResetTokenRepository->addToken($data);
-        }else{
+            $this->passwordResetTokenRepository->addToken($data);
+        } else {
             $data = ['email' => $request->email, 'token' => $checkToken->token];
         }
-
         //Mail code to be added
 
         return $this->sendResponse($data, __('message.user.password_reset_sent'), HTTP_OK);
     }
 }
-

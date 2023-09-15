@@ -2,21 +2,22 @@
 
 namespace App\Helpers;
 
-use Illuminate\{Auth\AuthenticationException, 
-    Support\Str, Support\Facades\Auth};
 use Exception;
-use Firebase\JWT\{JWT, Key};
-use DateTimeImmutable;
+use Firebase\JWT\JWT;
+use Firebase\JWT\Key;
+use Illuminate\Support\Str;
 use App\Helpers\Auth\TokenHelper;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Auth\AuthenticationException;
 
-class CommonHelper 
+class CommonHelper
 {
     // get jwt info from header
-    public function GetRawJWT()
+    public function getRawJwt()
     {
         $header = request()->header('Authorization', '');
         // check if header exists
-        if(empty($header)) {
+        if (empty($header)) {
             throw new AuthenticationException('authorization header not found');
         }
 
@@ -27,21 +28,19 @@ class CommonHelper
             if (!$jwt) {
                 throw new AuthenticationException('could not extract token');
             }
-
-        }else{
+        } else {
             throw new AuthenticationException('token not found');
         }
 
         return $jwt;
     }
 
-    public function DecodeRawJWT($jwt)
+    public function decodeRawJwt($jwt)
     {
         // use secret key to decode token
-        $secretKey  = env('JWT_SECRET');
+        $secretKey = env('JWT_SECRET');
         try {
             $token = JWT::decode($jwt, new Key($secretKey, 'HS256'));
-            $now = new DateTimeImmutable();
         } catch(Exception $e) {
             throw new AuthenticationException('unauthorized');
         }
@@ -49,78 +48,76 @@ class CommonHelper
         return $token;
     }
 
-    public function GetAndDecodeJWT()
+    public function getAndDecodeJwt()
     {
-        $jwt = $this->GetRawJWT();
-        $token = $this->DecodeRawJWT($jwt);
-
-        return $token;
+        $jwt = $this->getRawJwt();
+        return $this->decodeRawJwt($jwt);
     }
 
-    public static function LoginAttempt($input, $remember, $jwtTokenRepo)
+    public static function loginAttempt($input, $remember, $jwtTokenRepo)
     {
-        if (Auth::attempt($input, $remember))
-        {
+        if (Auth::attempt($input, $remember)) {
             $user = Auth::user();
-            $tokenHelper = new TokenHelper;
-            $token = $tokenHelper->GenerateToken($user, $jwtTokenRepo);
-            $success = ['user' => $user, 'token' => $token];
-            return $success;
-        }
-        else{
-            $error = ['error' => __('message.invalid_login')];
-            return $error;
+            $tokenHelper = new TokenHelper();
+            $token = $tokenHelper->generateToken($user, $jwtTokenRepo);
+            return ['user' => $user, 'token' => $token];
+        } else {
+            return ['error' => __('message.invalid_login')];
         }
     }
 
-    public static function GridManagement($repObj, $gridObj)
+    public static function gridManagement($repObj, $gridObj)
     {
         $sortCol = 'created_at';
         $sortType = 'asc';
         $page = 1;
         $limit = 10;
         $request = request();
-        if ($request->sort)
+        if ($request->sort) {
             $sortCol = $request->sort;
-        if ($request->desc)
+        }
+        if ($request->desc) {
             $sortType = 'desc';
-        if ($request->page)
+        }
+        if ($request->page) {
             $page = $request->page;
-        if ($request->limit)
+        }
+        if ($request->limit) {
             $limit = $request->limit;
-
+        }
 
         $gridData = $gridObj->getField();
         $fieldArray = [];
         foreach ($gridData as $value) {
-            $fieldArray [] = $value['name'];
+            $fieldArray[] = $value['name'];
         }
-        $gridData = $repObj->getPaginatedData($fieldArray, $limit, $page, $sortCol, $sortType);
-        return $gridData;
+        return $repObj->getPaginatedData($fieldArray, $limit, $page, $sortCol, $sortType);
     }
 
-    public static function DeleteUser($uuid, $repObj)
+    public static function deleteUser($uuid, $repObj)
     {
         $deleteUser = $repObj->deleteByUuidNotAdmin($uuid);
-        if($deleteUser)
+        if ($deleteUser) {
             $response = ['success' => __('message.user.delete_success')];
-        else
+        } else {
             $response = ['error' => __('message.user.delete_error')];
+        }
         return $response;
     }
 
-    public static function GetUserDetails($repObj, $uuid)
+    public static function getUserDetails($repObj, $uuid)
     {
         $userDetails = $repObj->getByFieldSingleRecord('uuid', $uuid);
-        
-        if($userDetails)
+
+        if ($userDetails) {
             $response = ['success' => __('message.user.fetch_success'),'data' => $userDetails];
-        else
+        } else {
             $response = ['error' => __('message.user.fetch_error')];
+        }
         return $response;
     }
 
-    public static function Logout($uniqueToken, $jwtTokenRepo)
+    public static function logout($uniqueToken, $jwtTokenRepo)
     {
         $data['expires_at'] = date('Y-m-d H:i:s');
         $where['unique_id'] = $uniqueToken;

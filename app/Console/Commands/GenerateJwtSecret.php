@@ -2,19 +2,14 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use Illuminate\Support\Str;
+use Illuminate\Console\Command;
 
 class GenerateJwtSecret extends Command
 {
     protected $signature = 'jwt:secret';
 
     protected $description = 'Generate a JWT secret key jwt package being used';
-
-    public function __construct()
-    {
-        parent::__construct();
-    }
 
     public function handle()
     {

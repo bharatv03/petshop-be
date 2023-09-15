@@ -2,16 +2,16 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Http\Exceptions\HttpResponseException;
-use Illuminate\Contracts\Validation\Validator;
-use App\Helpers\Auth\UserHelper;
-use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
+use App\Repositories\UserRepository;
+use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Http\Exceptions\HttpResponseException;
 
 class AdminUserUpdateRequest extends FormRequest
 {
-    protected $userRepository, $userId;
+    protected $userRepository;
+    protected $userId;
 
     public function __construct(Request $request, UserRepository $userRepository)
     {

@@ -4,9 +4,9 @@ namespace App\Http\Middleware;
 
 use Closure;
 use Illuminate\Http\Request;
-use Symfony\Component\HttpFoundation\Response;
 use App\Helpers\Auth\UserHelper;
 use App\Repositories\UserRepository;
+use Symfony\Component\HttpFoundation\Response;
 
 class AdminMiddleware
 {
@@ -25,16 +25,16 @@ class AdminMiddleware
     public function handle(Request $request, Closure $next): Response
     {
         $userHelper = new UserHelper();
-        $user = $userHelper->GetAuthUser($this->userRepository);
+        $user = $userHelper->getAuthUser($this->userRepository);
 
         if ($user->is_admin) {
             return $next($request);
         }
         $response = [
             'success' => false,
-            'error'=> 'unauthorized',
+            'error' => 'unauthorized',
             'data' => [],
-            'errors'=> []
+            'errors' => [],
         ];
         return response()->json($response, HTTP_UNAUTHORIZED);
     }
